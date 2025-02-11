@@ -10,18 +10,13 @@ const app = express();
 app.use(express.json());
 
 app.post("/user", async (req, res) => {
-  const { firstName, lastName, email, gender, age, about, skills, photoURL } =
-    req.body;
+  const { firstName, lastName, email, password } = req.body;
   try {
     const user = new User({
       firstName,
       lastName,
       email,
-      gender,
-      age,
-      about,
-      skills,
-      photoURL,
+      password,
     });
 
     await user.save();
@@ -68,12 +63,27 @@ app.delete("/user", async (req, res) => {
   }
 });
 
-app.patch("/user", async (req, res) => {
+app.patch("/user/:userEmail", async (req, res) => {
   const data = req.body;
-  const email = req.body.email;
+  const email = req.params?.userEmail;
+  
 
   try {
-    const user = await User.findOneAndReplace({ email }, data, {
+    const ALLOWED_UPDATES = ["age", "about", "gender", "photoURL", "skills"];
+
+    const isUpdateAllowed = Object.keys(data).every((k) =>
+      ALLOWED_UPDATES.includes(k)
+    );
+
+    if (!isUpdateAllowed) {
+      throw new Error("Update not allowed");
+    }
+
+    if(data.skills.length > 10){
+      throw new Error("You can add upto 10 skills only")
+    }
+
+    const user = await User.findOneAndUpdate({ email }, data, {
       returnDocument: "after",
       runValidators: true,
     });

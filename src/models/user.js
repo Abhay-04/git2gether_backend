@@ -20,6 +20,10 @@ const userSchema = new Schema(
       lowercase: true,
       trim: true,
     },
+    password: {
+      type: String,
+      required: true
+    },
     age: {
       type: Number,
       required: true,
