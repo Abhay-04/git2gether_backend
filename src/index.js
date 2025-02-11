@@ -66,7 +66,6 @@ app.delete("/user", async (req, res) => {
 app.patch("/user/:userEmail", async (req, res) => {
   const data = req.body;
   const email = req.params?.userEmail;
-  
 
   try {
     const ALLOWED_UPDATES = ["age", "about", "gender", "photoURL", "skills"];
@@ -79,8 +78,8 @@ app.patch("/user/:userEmail", async (req, res) => {
       throw new Error("Update not allowed");
     }
 
-    if(data.skills.length > 10){
-      throw new Error("You can add upto 10 skills only")
+    if (data.skills.length > 10) {
+      throw new Error("You can add upto 10 skills only");
     }
 
     const user = await User.findOneAndUpdate({ email }, data, {
