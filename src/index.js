@@ -1,22 +1,37 @@
 const express = require("express");
 
-const { auth } = require("./middlewares/auth");
+const { userAuth } = require("./middlewares/userAuth");
 
 const dbConnect = require("./config/database");
 const User = require("./models/user");
+const { signUpDataValidation } = require("./utils/validations");
+const bcrypt = require("bcrypt");
+
+const cookiesParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 
 const app = express();
 
 app.use(express.json());
+app.use(cookiesParser());
 
-app.post("/user", async (req, res) => {
-  const { firstName, lastName, email, password } = req.body;
+app.post("/signup", async (req, res) => {
   try {
+    const { firstName, lastName, email, password } = req.body;
+    // Validation of data
+
+    signUpDataValidation(req);
+
+    //Encrypt the password
+
+    const hashPassword = await bcrypt.hash(password, 10);
+
+    // create a user Instance
     const user = new User({
       firstName,
       lastName,
       email,
-      password,
+      password: hashPassword,
     });
 
     await user.save();
@@ -27,70 +42,55 @@ app.post("/user", async (req, res) => {
   }
 });
 
-app.get("/user", async (req, res) => {
+app.post("/login", async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.body.email });
+    const { email, password } = req.body;
 
-    if (!user) return res.status(404).send("User not found");
+    // find email in user model
 
-    res.send(user);
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
-});
+    const user = await User.findOne({ email });
 
-app.get("/feed", async (req, res) => {
-  try {
-    const user = await User.find({});
-
-    res.send(user);
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
-});
-
-app.delete("/user", async (req, res) => {
-  try {
-    const user = await User.deleteOne({ email: req.body.email });
-
-    if (user.deletedCount === 0) {
-      res.send("User not found");
-    } else {
-      res.send(user);
-    }
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
-});
-
-app.patch("/user/:userEmail", async (req, res) => {
-  const data = req.body;
-  const email = req.params?.userEmail;
-
-  try {
-    const ALLOWED_UPDATES = ["age", "about", "gender", "photoURL", "skills"];
-
-    const isUpdateAllowed = Object.keys(data).every((k) =>
-      ALLOWED_UPDATES.includes(k)
-    );
-
-    if (!isUpdateAllowed) {
-      throw new Error("Update not allowed");
+    if (!user) {
+      throw new Error("Invalid credentials");
     }
 
-    if (data.skills.length > 10) {
-      throw new Error("You can add upto 10 skills only");
-    }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
 
-    const user = await User.findOneAndUpdate({ email }, data, {
-      returnDocument: "after",
-      runValidators: true,
+    const jwtToken = await jwt.sign({ _id: user._id }, "getTogether@123", {
+      expiresIn: "7d",
     });
 
+    if (!isPasswordValid) {
+      throw new Error("Invalid credentials");
+    } else {
+      res.cookie("token", jwtToken, {
+        expires: new Date(Date.now() + 168 * 3600000), // cookie will be removed after 8 hours
+      });
+      res.send("Login Succesful.....");
+    }
+
+    // compare db pass with password
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+app.get("/profile", userAuth, async (req, res) => {
+  try {
+    const user = req.user;
+
+    console.log(user);
+
     res.send(user);
   } catch (error) {
     res.status(500).send(error.message);
   }
+});
+
+app.post("/sendConnectionRequest", userAuth, async (req, res) => {
+  const user = req.user;
+
+  res.send(user.firstName + " is sending a  connection.....");
 });
 
 app.use("/", (err, req, res, next) => {
