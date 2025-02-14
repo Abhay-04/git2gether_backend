@@ -45,12 +45,10 @@ const userSchema = new Schema(
     },
     gender: {
       type: String,
-
-      validate(value) {
-        if (!["male", "female", "others"].includes(value)) {
-          throw new Error("Gemder is not valid");
-        }
-      },
+      enum: {
+        values: ["male", "female", "others"],
+        message: `{VALUE} is not Valid gender`
+      }
     },
 
     about: {
@@ -100,4 +98,4 @@ userSchema.methods.validatePassword = async function (passwordInputByUser) {
   return isPasswordValid;
 };
 
-module.exports = model("User", userSchema);
+module.exports = new model("User", userSchema);

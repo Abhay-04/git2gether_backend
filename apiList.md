@@ -18,8 +18,10 @@
 
 ## connectionRequestRouter
 
-- POST  /request/send/interested/:userId
-- POST  /request/send/ignored/:userId
+- POST  /request/send/:status/:userId
+
+
+
 - POST  /request/review/interested/:requestId
 - POST  /request/review/interested/:requestId
 
