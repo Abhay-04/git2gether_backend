@@ -12,6 +12,7 @@ const connectionRequestSchema = new Schema(
 
     toUserId: {
       type: moongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
 
