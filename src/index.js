@@ -8,6 +8,8 @@ const connectionRequestRouter = require("./routes/request");
 const profileRouter = require("./routes/profile");
 const userRouter = require("./routes/user");
 
+const PORT = process.env.PORT || 3000;
+
 const app = express();
 
 app.use(express.json());
@@ -24,7 +26,7 @@ app.use("/", (err, req, res, next) => {
 
 dbConnect()
   .then(() => {
-    app.listen(3000, () => {
+    app.listen(PORT, () => {
       console.log("Server is running");
     });
   })
