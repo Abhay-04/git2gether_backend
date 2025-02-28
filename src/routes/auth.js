@@ -57,7 +57,7 @@ authRouter.post("/login", async (req, res) => {
       res.cookie("token", jwtToken, {
         expires: new Date(Date.now() + 168 * 3600000), // cookie will be removed after 8 hours
       });
-      res.send("Login Succesful.....");
+      res.json({ message : "Login Succesful....." , user  : user});
     }
 
     // compare db pass with password
