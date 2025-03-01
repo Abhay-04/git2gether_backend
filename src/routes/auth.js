@@ -57,10 +57,10 @@ authRouter.post("/login", async (req, res) => {
       res.cookie("token", jwtToken, {
         expires: new Date(Date.now() + 168 * 3600000), // cookie will be removed after 8 hours
         httpOnly: true,
-        secure: true,  // Required for HTTPS
-        sameSite: "None" // Required for cross-origin requests
+        secure: true, // Required for HTTPS
+        sameSite: "None", // Required for cross-origin requests
       });
-      res.json({ message : "Login Succesful....." , user  : user});
+      res.json({ message: "Login Succesful.....", user: user });
     }
 
     // compare db pass with password
@@ -72,6 +72,9 @@ authRouter.post("/login", async (req, res) => {
 authRouter.post("/logout", async (req, res) => {
   res.cookie("token", null, {
     expires: new Date(Date.now()),
+    httpOnly: true,
+    secure: true, // Required for HTTPS
+    sameSite: "None", // Required for cross-origin requests
   });
 
   res.send("Logout Successful.....");
