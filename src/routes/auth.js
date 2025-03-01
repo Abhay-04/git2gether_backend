@@ -56,6 +56,9 @@ authRouter.post("/login", async (req, res) => {
     } else {
       res.cookie("token", jwtToken, {
         expires: new Date(Date.now() + 168 * 3600000), // cookie will be removed after 8 hours
+        httpOnly: true,
+        secure: true,  // Required for HTTPS
+        sameSite: "None" // Required for cross-origin requests
       });
       res.json({ message : "Login Succesful....." , user  : user});
     }
