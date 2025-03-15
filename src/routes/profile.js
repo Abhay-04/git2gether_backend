@@ -19,6 +19,7 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
   try {
     if (!profileEditDataValidation(req)) {
       throw new Error("Edit is not allowed");
+      
     }
 
     const loggedInUser = req.user;
