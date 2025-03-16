@@ -16,9 +16,16 @@ const profileEditDataValidation = (req) => {
   if (req.body.skills && req.body.skills.length > 10) {
     throw new Error("You can add upto only 10 skills");
   }
-  
 
-  const allowedEditFields = ["age", "gender", "about", "photoURL", "skills"];
+  const allowedEditFields = [
+    "firstName",
+    "lastName",
+    "age",
+    "gender",
+    "about",
+    "photoURL",
+    "skills",
+  ];
 
   const isEditAllowed = Object.keys(req.body).every((fields) =>
     allowedEditFields.includes(fields)

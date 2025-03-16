@@ -6,7 +6,7 @@ const { set } = require("mongoose");
 
 const userRouter = express.Router();
 
-const SAFE_USER_DATA = "firstName lastName gender age skills about photoURL";
+const SAFE_USER_DATA = "firstName lastName gender age skills about photoURL createdAt ";
 
 userRouter.get("/user/requests/received", userAuth, async (req, res) => {
   try {
