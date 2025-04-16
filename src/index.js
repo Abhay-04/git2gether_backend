@@ -9,13 +9,13 @@ const connectionRequestRouter = require("./routes/request");
 const profileRouter = require("./routes/profile");
 const userRouter = require("./routes/user");
 
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 const app = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:5173" , "https://git2gether.vercel.app" , "http://34.203.234.66" , "http://localhost:3000"  ],
+    origin: ["http://localhost:5173" , "https://git2gether.vercel.app" , "http://34.203.234.66"   ],
     credentials: true,
   })
 );
