@@ -15,7 +15,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:5173" , "https://git2gether.vercel.app" , "http://34.203.234.66/api"   ],
+    origin: ["http://localhost:5173" , "https://git2gether.vercel.app" , "http://34.203.234.66/"   ],
     credentials: true,
   })
 );
