@@ -29,7 +29,7 @@ authRouter.post("/signup", async (req, res) => {
 
     await user.save();
 
-    res.json({ message: "Signup Succesful.....", user: user })
+    res.json({ message: "Signup Succesful.....", user: user });
   } catch (error) {
     res.status(500).send(error.message);
   }
@@ -57,8 +57,8 @@ authRouter.post("/login", async (req, res) => {
       res.cookie("token", jwtToken, {
         expires: new Date(Date.now() + 168 * 3600000), // cookie will be removed after 8 hours
         httpOnly: true,
-        secure: true, // Required for HTTPS
-        sameSite: "None", // Required for cross-origin requests
+        secure: false, // Allow over HTTP
+        sameSite: "Lax", // Works over HTTP and is more secure than "None"
       });
       res.json({ message: "Login Succesful.....", user: user });
     }
