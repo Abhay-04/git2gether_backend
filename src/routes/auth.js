@@ -27,9 +27,17 @@ authRouter.post("/signup", async (req, res) => {
       password: hashPassword,
     });
 
-    await user.save();
+    const savedUser = await user.save();
+    const jwtToken = await savedUser.getJWT();
 
-    res.json({ message: "Signup Succesful.....", user: user });
+    res.cookie("token", jwtToken, {
+      expires: new Date(Date.now() + 168 * 3600000), // cookie will be removed after 8 hours
+      httpOnly: true,
+      secure: false, // Allow over HTTP
+      sameSite: "Lax", // Works over HTTP and is more secure than "None"
+    });
+
+    res.json({ message: "Signup Succesful.....", user: savedUser });
   } catch (error) {
     res.status(500).send(error.message);
   }

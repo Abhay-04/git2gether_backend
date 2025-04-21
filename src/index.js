@@ -13,9 +13,11 @@ const PORT = 3000;
 
 const app = express();
 
+require("dotenv").config();
+
 app.use(
   cors({
-    origin: ["http://localhost:5173" , "https://git2gether.vercel.app" , "http://54.167.51.103" , "http://54.167.51.103:80" ],
+    origin: ["http://localhost:5173", "https://git2gether.vercel.app"],
     credentials: true,
   })
 );

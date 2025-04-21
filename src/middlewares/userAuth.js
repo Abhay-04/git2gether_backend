@@ -16,7 +16,7 @@ const userAuth = async (req, res, next) => {
 
     // validate the token
 
-    const decodedObj = await jwt.verify(token, "getTogether@123");
+    const decodedObj = await jwt.verify(token, process.env.JWT_SECRET);
 
     const { _id } = decodedObj;
 
